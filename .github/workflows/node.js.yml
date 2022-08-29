@@ -12,12 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Use Node.js 16.14.0
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.14.0
-          with: 'npm'
       - uses: actions/checkout@v3
       - name: install redis
         run: |
@@ -28,7 +24,11 @@ jobs:
           sudo apt-get install redis
       - name: run redis
         run: redis-server &
-        
+      - name: Use Node.js 16.14.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.0
+          with: 'npm'
       - name: Cache node_modules
         id: cache-node-modules
         uses: actions/cache@v2
