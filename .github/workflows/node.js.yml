@@ -37,7 +37,7 @@ jobs:
           key: ${{ runner.os }}16.14.0-nodeModules-${{ hashFiles('package-lock.json') }}-${{ hashFiles('package.json') }}
           restore-keys: |
             ${{ runner.os }}-16.14.0-nodeModules-
-      - name: Install dependencies 📦️
+      - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
           npm install pnpm -g
