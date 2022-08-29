@@ -5,7 +5,7 @@ name: Node.js
 
 on:
   push:
-    branch: "main"
+    branches: ["main"]
   schedule：
     - corn：30 */5 * * *
 
