@@ -11,22 +11,37 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: clone miao plugin
-        run: git clone https://gitee.com/yoimiya-kokomi/miao-plugin.git ./plugins/miao-plugin/
-      - name: install Homebrew
-        run: brew install redis
-      - name: start redis server
-        run: brew services start redis
-      - name: test redis
-        run: redis-cli
       - name: Use Node.js 16.14.0
         uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
           with: 'npm'
-      - run: npm install pnpm -g
-      - run: pnpm install -P
-      - run: node app
+      - uses: actions/checkout@v3
+      - name: install redis
+        run: |
+          sudo apt install lsb-release
+          curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+          sudo apt-get update
+          sudo apt-get install redis
+      - name: run redis
+        run: redis-server &
+        
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}16.14.0-nodeModules-${{ hashFiles('package-lock.json') }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-16.14.0-nodeModules-
+      - name: Install dependencies 📦️
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          npm install pnpm -g
+          pnpm install -P  
+      - name: run yunzai bot
+        run: node app
+      - name: uploading data...
