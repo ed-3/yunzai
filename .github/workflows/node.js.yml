@@ -5,9 +5,9 @@ name: Node.js
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branch: "main"
+  schedule：
+    - corn：30 */5 * * *
 
 jobs:
   build:
