@@ -14,16 +14,12 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup redis
-        uses: shogo82148/actions-setup-redis@v1
-        with:
-          redis-version: 6.2
-          auto-start: "false"
-
-      - name: tests with Test::RedisServer
-        run: |
-          cpanm Test::RedisServer
-          prove -lv t
+      - name: install Homebrew
+        run: brew install redis
+      - name: start redis server
+        run: redis-server
+      - name: test redis
+        run: redis-cli
       - name: Use Node.js 16.14.0
         uses: actions/setup-node@v3
         with:
